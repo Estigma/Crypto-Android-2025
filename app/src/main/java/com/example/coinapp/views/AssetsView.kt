@@ -2,50 +2,83 @@ package com.example.coinapp.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.example.coinapp.models.Asset
+import com.example.coinapp.viewModels.AssetsListViewModel
 
 @Composable
+fun AssetsList(viewModel: AssetsListViewModel = hiltViewModel() ) {
+    val assets by viewModel.assets.collectAsState()
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxHeight()
+            .background(MaterialTheme.colorScheme.onBackground)
+    ) {
+        items(assets) { asset ->
+            AssetRow(asset)
+        }
+    }
+}
+@Composable
 fun AssetRow(asset: Asset){
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            //.background(Color.Gray)
+            .padding(vertical = 8.dp)
+            .background(Color.Black)
     ){
-
-//        Icon(
-//            imageVector = Icons.Filled.CheckCircle,
-//            contentDescription = null,
-//            tint = if( asset.percentage >= 0 ) Color.Green else Color.Red,
-//            modifier = Modifier.padding(horizontal = 8.dp)
-//        )
-
-        AsyncImage(
-            model = "https://assets.coincap.io/assets/icons/${asset.symbol.lowercase()}@2x.png",
-            contentDescription = null,
-            modifier = Modifier.padding(horizontal = 12.dp)
-        )
-
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+        ){
+            if(LocalInspectionMode.current)
+            {
+                Icon(
+                    imageVector = Icons.Filled.AccountCircle,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(30.dp)
+                )
+            }
+            else
+            {
+                AsyncImage(
+                    model = "https://assets.coincap.io/assets/icons/${asset.symbol.lowercase()}@2x.png",
+                    contentDescription = null,
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+            }
+        }
 
         Column (
             modifier = Modifier
@@ -53,36 +86,30 @@ fun AssetRow(asset: Asset){
         ){
             Text(
                 text = asset.symbol,
-                fontSize = 18.sp
+                fontSize = 18.sp,
+                color = Color.White
             )
             Text(
                 text = asset.name,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                color = Color.White
             )
         }
 
-        //Spacer(modifier = Modifier.weight(1f))
-
-//        Icon(
-//            imageVector = Icons.Filled.KeyboardArrowUp,
-//            contentDescription = null,
-//            tint = Color.Green,
-//            modifier = Modifier.padding(horizontal = 16.dp)
-//        )
         Column {
             Row()
             {
                 Icon(
-                    imageVector = if (asset.percentage >= 0) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+                    imageVector = if (asset.percent >= 0) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                     contentDescription = null,
-                    tint = if (asset.percentage >= 0) Color.Green else Color.Red,
+                    tint = if (asset.percent >= 0) Color.Green else Color.Red,
                     //modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
                 Text(
-                    text = "${asset.percentage}%",
+                    text = "${asset.percent}%",
                     fontSize = 16.sp,
-                    color = if (asset.percentage >= 0) Color.Green else Color.Red,
+                    color = if (asset.percent >= 0) Color.Green else Color.Red,
                     modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
@@ -90,15 +117,10 @@ fun AssetRow(asset: Asset){
         Text(
             text = "$${asset.price}",
             fontSize = 16.sp,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
+            color = Color.White
         )
-
-//        Column {
-//            Text(text = "82697.96")
-//        }
     }
-
-
 }
 
 @Preview(
@@ -107,28 +129,5 @@ fun AssetRow(asset: Asset){
 )
 @Composable
 fun AssetRowPreview(){
-    Column(
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier.fillMaxSize()
-    )
-    {
-        AssetRow(
-            Asset(
-                id = "BTC",
-                name = "Bitcoin",
-                symbol = "BTC",
-                price = "82697.96",
-                percentage = 5.45
-            )
-        )
-        AssetRow(
-            Asset(
-                id = "ETH",
-                name = "Etherium",
-                symbol = "ETH",
-                price = "22697.96",
-                percentage = -1.45
-            )
-        )
-    }
+    AssetsList()
 }
