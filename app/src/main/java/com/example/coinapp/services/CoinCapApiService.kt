@@ -12,7 +12,7 @@ class CoinCapApiService @Inject constructor(
 
 ) {
     suspend fun getAssets(): AssetsResponse {
-        val response: HttpResponse = client.get("https://rest.coincap.io/v3/assets?apiKey=")
+        val response: HttpResponse = client.get("https://rest.coincap.io/v3/assets?apiKey=6b485c584d692e1a35d6025d8fae446d0458f1ff80c1722ab2173b6f9ae99cea")
         return response.body()
     }
 }

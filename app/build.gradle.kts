@@ -5,6 +5,7 @@ plugins {
     id("kotlin-kapt")
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -69,6 +70,12 @@ dependencies {
     implementation(libs.ktor.content.negotiation)
 
     implementation(libs.kotlinx.serialization.json)
+
+    // Implementación con BOM
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

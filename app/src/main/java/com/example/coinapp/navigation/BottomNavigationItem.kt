@@ -9,12 +9,12 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 
-sealed class BottomNavigationItem (
+sealed class BottomNavigationItem(
     val route: String,
     val unselectedIcon: ImageVector,
     val selectedIcon: ImageVector,
     val title: String
-){
+) {
     data object Home: BottomNavigationItem(
         route = "home",
         unselectedIcon = Icons.Outlined.Home,
